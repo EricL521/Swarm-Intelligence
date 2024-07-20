@@ -1,0 +1,11 @@
+- Just some basic ideas for this game
+	- It's going to simulate what it might be like to be the consciousness emerging from an ant colony
+	- I'm thinking that it could be more of an abstract representation, with colors not representing irl colors, but useful things for an ant colony to know; food, danger, etc
+		- Also somehow gotta differentiate between memory and active "feeling" by ants
+	- Also should have more detail where there are more ants
+	- In terms of time speed, humans can react to something in 0.3 seconds, whereas for an ant colony it seems to be more on the scale of a few minutes
+		- So for an ant colony consciouness, if it exists, perhaps an hour would be a couple seconds for a human
+	- Also I need to have a system for replacing queens
+		- Either finding new ones, or even having more than one somehow
+		- Probably would risk creating a new colony if you have more than one
+		- This would mean making AIs though

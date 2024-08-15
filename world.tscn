@@ -1,14 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://copajfepskeqc"]
+[gd_scene load_steps=3 format=3 uid="uid://copajfepskeqc"]
 
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_18kru"]
+[ext_resource type="Script" path="res://scripts/Camera3D.gd" id="2_674hy"]
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_18kru")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.764021, 0.645191, 0, -0.645191, 0.764021, 2.38419e-07, 3.30889, 4.61027)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.38419e-07, 3.30889, 4.61027)
+script = ExtResource("2_674hy")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.470073, 0.882628, 0, -0.882628, 0.470073, 2.38419e-07, 4.3954, 4.28092)
-light_energy = 5.0
-spot_range = 12.1537
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)

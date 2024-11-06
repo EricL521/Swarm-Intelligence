@@ -17,20 +17,24 @@ var size_z: int:
 # Data is stored in this order:
 # num_ants, num_food, num_queens, num_enemies
 var data: PackedInt64Array
+var data_size: int:
+	get: return size_x * size_y * size_z * DataPoint.NUM_DATA_ENTRIES
 var size_data: PackedFloat32Array
 
 # size variables are how many entries in that direction to store
 # scaling functions are how big the corresponding int is
-func _init(min_x: int, max_x: int, min_y: int, max_y: int, min_z: int, max_z: int, data: PackedInt64Array = PackedInt64Array([])) -> void:
-	self.min_x = min_x
-	self.max_x = max_x
-	self.min_y = min_y
-	self.max_y = max_y
-	self.min_z = min_z
-	self.max_z = max_z
+func _init(init_min_x: int, init_max_x: int, init_min_y: int, init_max_y: int, init_min_z: int, init_max_z: int, init_data: PackedInt64Array = PackedInt64Array([])) -> void:
+	min_x = init_min_x
+	max_x = init_max_x
+	min_y = init_min_y
+	max_y = init_max_y
+	min_z = init_min_z
+	max_z = init_max_z
 	
 	# Initialize data if it is empty
-	if data.size() == 0:
+	if init_data.size() == 0:
+		data = PackedInt64Array([])
+		data.resize(data_size)
 		for x in range(min_x, max_x + 1):
 			for y in range(min_y, max_y + 1):
 				for z in range(min_z, max_z + 1):
@@ -39,11 +43,11 @@ func _init(min_x: int, max_x: int, min_y: int, max_y: int, min_z: int, max_z: in
 					temp_array.fill(0)
 					set_data(x, y, z, DataPoint.new(PackedInt64Array(temp_array)))
 	else:
-		assert(data.size() == size_x * size_y * size_z * DataPoint.NUM_DATA_ENTRIES, \
+		assert(init_data.size() == data_size, \
 			"Dimension mismatch. data has size %s. Should be %s. " \
-			% [data.size(), size_x * size_y * size_z * DataPoint.NUM_DATA_ENTRIES])
+			% [init_data.size(), data_size])
 		
-		self.data = data
+		data = init_data
 
 # Sets data at a position
 func set_data(x: int, y: int, z: int, data_point: DataPoint) -> void:

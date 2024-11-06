@@ -5,11 +5,11 @@ class_name DataPoint extends Object
 const NUM_DATA_ENTRIES = 4
 
 # Seperate new function for writing out data manually
-static func new_enum(num_ants: int, num_food: int, num_queen: int, num_enemies: int) -> DataPoint:
-	var temp_array: Array = [num_ants, num_food, num_queen, num_enemies]
-	var data_entries = PackedInt64Array(temp_array)
+static func new_enum(init_num_ants: int, init_num_food: int, init_num_queens: int, init_num_enemies: int) -> DataPoint:
+	var temp_array: Array = [init_num_ants, init_num_food, init_num_queens, init_num_enemies]
+	var init_data_entries = PackedInt64Array(temp_array)
 	
-	return DataPoint.new(data_entries)
+	return DataPoint.new(init_data_entries)
 
 var data_entries: PackedInt64Array
 
@@ -26,8 +26,8 @@ var num_enemies: int:
 	set(value): data_entries[3] = value
 	get: return data_entries[3]
 
-func _init(data_entries: PackedInt64Array) -> void:
-	assert(data_entries.size() == NUM_DATA_ENTRIES, \
-		"Dimension mismatch. data_entries has size %s. Should be %s. " % [data_entries.size(), NUM_DATA_ENTRIES])
+func _init(init_data_entries: PackedInt64Array) -> void:
+	assert(init_data_entries.size() == NUM_DATA_ENTRIES, \
+		"Dimension mismatch. data_entries has size %s. Should be %s. " % [init_data_entries.size(), NUM_DATA_ENTRIES])
 	
-	self.data_entries = data_entries
+	data_entries = init_data_entries

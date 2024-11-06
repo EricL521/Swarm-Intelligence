@@ -27,4 +27,7 @@ var num_enemies: int:
 	get: return data_entries[3]
 
 func _init(data_entries: PackedInt64Array) -> void:
+	assert(data_entries.size() == NUM_DATA_ENTRIES, \
+		"Dimension mismatch. data_entries has size %s. Should be %s. " % [data_entries.size(), NUM_DATA_ENTRIES])
+	
 	self.data_entries = data_entries

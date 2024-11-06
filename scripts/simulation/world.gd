@@ -31,12 +31,19 @@ func _init(min_x: int, max_x: int, min_y: int, max_y: int, min_z: int, max_z: in
 	
 	# Initialize data if it is empty
 	if data.size() == 0:
-		pass
-	elif data.size() == size_x * size_y * size_z * DataPoint.NUM_DATA_ENTRIES:
-		self.data = data
+		for x in range(min_x, max_x + 1):
+			for y in range(min_y, max_y + 1):
+				for z in range(min_z, max_z + 1):
+					var temp_array = []
+					temp_array.resize(DataPoint.NUM_DATA_ENTRIES)
+					temp_array.fill(0)
+					set_data(x, y, z, DataPoint.new(PackedInt64Array(temp_array)))
 	else:
-		assert("Data dimension mismatch. Given array has size %s, but should be %s. " \
+		assert(data.size() == size_x * size_y * size_z * DataPoint.NUM_DATA_ENTRIES, \
+			"Dimension mismatch. data has size %s. Should be %s. " \
 			% [data.size(), size_x * size_y * size_z * DataPoint.NUM_DATA_ENTRIES])
+		
+		self.data = data
 
 # Sets data at a position
 func set_data(x: int, y: int, z: int, data_point: DataPoint) -> void:
@@ -52,14 +59,15 @@ func get_data(x: int, y: int, z: int) -> DataPoint:
 
 # Returns the index of a coordinate
 func get_index(x: int, y: int, z: int, data_entry: int) -> int:
-	if (x < min_x or x >= max_x):
-		assert("x (%s) out of bounds. Should be between %s and %s, inclusive. " % [x, min_x, max_x])
-	if (y < min_y or y >= max_y):
-		assert("y (%s) out of bounds. Should be between %s and %s, inclusive. " % [y, min_y, max_y])
-	if (z < min_z or z > max_z):
-		assert("z (%s) out of bounds. Should be between %s and %s, inclusive. " % [z, min_z, max_z])
-	if (data_entry < 0 or data_entry >= DataPoint.NUM_DATA_ENTRIES):
-		assert("data_entry (%s) out of bounds. Should be between 0 and %s" % [data_entry, DataPoint.NUM_DATA_ENTRIES])
+	assert(x >= min_x and x <= max_x, \
+		"x (%s) out of bounds. Should be between %s and %s, inclusive. " % [x, min_x, max_x])
+	assert(y >= min_y and y <= max_y, \
+		"y (%s) out of bounds. Should be between %s and %s, inclusive. " % [y, min_y, max_y])
+	assert(z >= min_z and z <= max_z, \
+		"z (%s) out of bounds. Should be between %s and %s, inclusive. " % [z, min_z, max_z])
+	assert(data_entry >= 0 and data_entry < DataPoint.NUM_DATA_ENTRIES, 
+		"data_entry (%s) out of bounds. Should be between 0 and %s, inclusive" % [data_entry, DataPoint.NUM_DATA_ENTRIES - 1])
+	
 	return ((x - min_x) * size_y * size_z * DataPoint.NUM_DATA_ENTRIES) \
 		+ ((y - min_y) * size_z * DataPoint.NUM_DATA_ENTRIES) \
 		+ ((z - min_z) * DataPoint.NUM_DATA_ENTRIES) \

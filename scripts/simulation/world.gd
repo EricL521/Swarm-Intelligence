@@ -2,6 +2,7 @@
 class_name World extends Object
 
 # In general we store a 4d array with information about each "chunk" of the world
+# y is UP
 var min_x: int
 var max_x: int
 func get_size_x() -> int:

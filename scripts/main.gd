@@ -4,8 +4,8 @@ extends Node3D
 @export var update_timer: Timer
 @export var min_x: int = -10
 @export var max_x: int = 10
-@export var min_y: int = -10
-@export var max_y: int = 10
+@export var min_y: int = -5
+@export var max_y: int = 5
 @export var min_z: int = -10
 @export var max_z: int = 10
 
@@ -17,7 +17,8 @@ func _ready() -> void:
 	update_timer.timeout.connect(_on_timer_timeout)
 	
 	# Prepare our data
-	world = World.new(min_x, max_x, min_y, max_y, min_z, max_z, [])
+	world = World.new(min_x, max_x, min_y, max_y, min_z, max_z)
+	world.set_data(0, 0, 0, DataPoint.new_enum(0, 100, 1, 0))
 	world_updater = WorldUpdater.new(shader_file, world, get_tree())
 	
 	world_updater.gpu_sync.connect(_on_gpu_sync)

@@ -40,10 +40,12 @@ func update() -> void:
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
 	
 	# Add buffer data
+	var world_data_buffer_input := rd.storage_buffer_create(_world_data_bytes.size(), _world_data_bytes)
+	add_buffer(compute_list, shader, world_data_buffer_input, 0)
 	var world_data_buffer := rd.storage_buffer_create(_world_data_bytes.size(), _world_data_bytes)
-	add_buffer(compute_list, shader, world_data_buffer, 0)
+	add_buffer(compute_list, shader, world_data_buffer, 1)
 	var world_size_buffer := rd.storage_buffer_create(_world_size_bytes.size(), _world_size_bytes)
-	add_buffer(compute_list, shader, world_size_buffer, 1)
+	add_buffer(compute_list, shader, world_size_buffer, 2)
 	
 	rd.compute_list_dispatch(compute_list, world.get_size_x(), world.get_size_y(), world.get_size_z())
 	rd.compute_list_end()

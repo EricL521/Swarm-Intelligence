@@ -7,14 +7,22 @@
 // Invocations in the (x, y, z) dimension
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
-// A binding to the data buffer we create in our script
-layout(set = 0, binding = 0, std430) restrict buffer WorldDataBuffer {
+// never written to
+// input copy of world data
+layout(set = 0, binding = 0, std430) readonly buffer WorldDataBufferInput {
 	int64_t data[];
 }
-world_data_buffer;
+world_data_buffer_input;
+
+// output copy of world data
+// assumed to start at the same state as world_data_buffer_input
+layout(set = 1, binding = 1, std430) restrict buffer WorldDataBufferOutput {
+	int64_t data[];
+}
+world_data_buffer_output;
 
 // Array of: [size_x, size_y, size_z, NUM_DATA_ENTRIES]
-layout(set = 1, binding = 1, std430) restrict buffer WorldSizeBuffer {
+layout(set = 2, binding = 2, std430) restrict buffer WorldSizeBuffer {
 	int data[];
 }
 world_size_buffer;
@@ -45,17 +53,17 @@ int getIndex(ivec3 pos) {
 		+ (pos.z * world_size_buffer.data[3]);
 }
 
-void addNumAnts(int index, int64_t num_ants) { atomicAdd(world_data_buffer.data[index + 0], num_ants); }
-int64_t getNumAnts(int index) { return world_data_buffer.data[index + 0]; }
+void addNumAnts(int index, int64_t num_ants) { atomicAdd(world_data_buffer_output.data[index + 0], num_ants); }
+int64_t getNumAnts(int index) { return world_data_buffer_input.data[index + 0]; }
 
-void addNumFood(int index, int64_t num_food) { atomicAdd(world_data_buffer.data[index + 1], num_food); }
-int64_t getNumFood(int index) { return world_data_buffer.data[index + 1]; }
+void addNumFood(int index, int64_t num_food) { atomicAdd(world_data_buffer_output.data[index + 1], num_food); }
+int64_t getNumFood(int index) { return world_data_buffer_input.data[index + 1]; }
 
-void addNumQueens(int index, int64_t num_queens) { atomicAdd(world_data_buffer.data[index + 2], num_queens); }
-int64_t getNumQueens(int index) { return world_data_buffer.data[index + 2]; }
+void addNumQueens(int index, int64_t num_queens) { atomicAdd(world_data_buffer_output.data[index + 2], num_queens); }
+int64_t getNumQueens(int index) { return world_data_buffer_input.data[index + 2]; }
 
-void addNumEnemies(int index, int64_t num_enemies) { atomicAdd(world_data_buffer.data[index + 3], num_enemies); }
-int64_t getNumEnemies(int index) { return world_data_buffer.data[index + 3]; }
+void addNumEnemies(int index, int64_t num_enemies) { atomicAdd(world_data_buffer_output.data[index + 3], num_enemies); }
+int64_t getNumEnemies(int index) { return world_data_buffer_input.data[index + 3]; }
 
 #define INIT_DATA_VARS(index) \
 	int64_t initNumAnts = getNumAnts(index); \
@@ -198,5 +206,5 @@ void main() {
 	moveAnts(pos);
 
 	int index = getIndex(pos);
-	addNumFood(index, 10);
+	addNumFood(index, 3);
 }

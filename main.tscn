@@ -7,13 +7,13 @@
 script = ExtResource("1_a36px")
 shader_file = ExtResource("2_0nkwk")
 update_timer = NodePath("Timer")
-min_x = -1
-max_x = 1
-min_y = -1
-max_y = 1
-min_z = -1
-max_z = 1
+min_x = -5
+max_x = 5
+min_y = -2
+max_y = 2
+min_z = -5
+max_z = 5
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.5
 autostart = true

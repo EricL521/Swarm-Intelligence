@@ -1,19 +1,43 @@
-[gd_scene load_steps=3 format=3 uid="uid://copajfepskeqc"]
+[gd_scene load_steps=8 format=3 uid="uid://copajfepskeqc"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_a36px"]
 [ext_resource type="RDShaderFile" uid="uid://g6gjnetw3b10" path="res://compute_shader.glsl" id="2_0nkwk"]
+[ext_resource type="Script" path="res://scripts/render/sprite.gd" id="3_kd643"]
+[ext_resource type="RDShaderFile" uid="uid://dik5gotsbusdj" path="res://render_shader.glsl" id="4_dp5iv"]
 
-[node name="Main" type="Node3D" node_paths=PackedStringArray("update_timer")]
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jlaqm"]
+size = Vector2(1000, 1000)
+
+[sub_resource type="Gradient" id="Gradient_jxtue"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xh3fv"]
+gradient = SubResource("Gradient_jxtue")
+width = 100
+height = 100
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("update_timer")]
 script = ExtResource("1_a36px")
-shader_file = ExtResource("2_0nkwk")
+sim_shader_file = ExtResource("2_0nkwk")
 update_timer = NodePath("Timer")
 min_x = -5
 max_x = 5
-min_y = -2
-max_y = 2
+min_y = 0
+max_y = 0
 min_z = -5
 max_z = 5
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.5
 autostart = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." node_paths=PackedStringArray("world_node")]
+texture = SubResource("PlaceholderTexture2D_jlaqm")
+centered = false
+script = ExtResource("3_kd643")
+render_shader_file = ExtResource("4_dp5iv")
+blend_texture = SubResource("GradientTexture2D_xh3fv")
+world_node = NodePath("..")

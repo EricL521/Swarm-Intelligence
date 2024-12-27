@@ -42,9 +42,9 @@ const int64_t enemyFightStrength = 1;
 
 // Returns -1 if invalid pos
 int getIndex(ivec3 pos) {
-	if (pos.x < 0 || pos.x > world_size_buffer.data[0] 
-		|| pos.y < 0 || pos.y > world_size_buffer.data[1] 
-		|| pos.z < 0 || pos.z > world_size_buffer.data[2]) 
+	if (pos.x < 0 || pos.x >= world_size_buffer.data[0] 
+		|| pos.y < 0 || pos.y >= world_size_buffer.data[1] 
+		|| pos.z < 0 || pos.z >= world_size_buffer.data[2]) 
 	{
 		return -1;
 	}

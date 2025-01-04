@@ -12,7 +12,7 @@ signal initialize
 @export var max_z: int = 10
 
 var world: World
-var world_updater: WorldUpdater
+var world_updater: WorldUpdater	
 var update_start_time: int
 
 # Called when the node enters the scene tree for the first time.

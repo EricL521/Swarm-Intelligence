@@ -1,23 +1,20 @@
 #[compute]
 #version 450
 
-#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
-#extension GL_EXT_shader_atomic_int64 : enable
-
 // Invocations in the (x, y, z) dimension
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
 // never written to
 // input copy of world data
 layout(set = 0, binding = 0, std430) readonly buffer WorldDataBufferInput {
-	int64_t data[];
+	int data[];
 }
 world_data_buffer_input;
 
 // output copy of world data
 // assumed to start at the same state as world_data_buffer_input
 layout(set = 1, binding = 1, std430) restrict buffer WorldDataBufferOutput {
-	int64_t data[];
+	int data[];
 }
 world_data_buffer_output;
 
@@ -28,15 +25,15 @@ layout(set = 2, binding = 2, std430) restrict buffer WorldSizeBuffer {
 world_size_buffer;
 
 // Some constants used in calculations
-const int64_t antFoodCarry = 10;
-const int64_t antFoodConsumption = 1;
-const int64_t antFightStrength = 1;
+const int antFoodCarry = 10;
+const int antFoodConsumption = 1;
+const int antFightStrength = 1;
 const double antLeaveRatio = 0.8; // percent of ants that can leave a tile in a tick
-const int64_t antQueenRatio = 10; // optimal ratio of ant:queen
-const int64_t queenFoodConsumption = 2;
-const int64_t queenAntProduction = 10;
-const int64_t queenFightStrength = 2; 
-const int64_t enemyFightStrength = 1;
+const int antQueenRatio = 10; // optimal ratio of ant:queen
+const int queenFoodConsumption = 2;
+const int queenAntProduction = 10;
+const int queenFightStrength = 2; 
+const int enemyFightStrength = 1;
 
 // Some helper functions
 
@@ -53,24 +50,24 @@ int getIndex(ivec3 pos) {
 		+ (pos.z * world_size_buffer.data[3]);
 }
 
-void addNumAnts(int index, int64_t num_ants) { atomicAdd(world_data_buffer_output.data[index + 0], num_ants); }
-int64_t getNumAnts(int index) { return world_data_buffer_input.data[index + 0]; }
+void addNumAnts(int index, int num_ants) { atomicAdd(world_data_buffer_output.data[index + 0], num_ants); }
+int getNumAnts(int index) { return world_data_buffer_input.data[index + 0]; }
 
-void addNumFood(int index, int64_t num_food) { atomicAdd(world_data_buffer_output.data[index + 1], num_food); }
-int64_t getNumFood(int index) { return world_data_buffer_input.data[index + 1]; }
+void addNumFood(int index, int num_food) { atomicAdd(world_data_buffer_output.data[index + 1], num_food); }
+int getNumFood(int index) { return world_data_buffer_input.data[index + 1]; }
 
-void addNumQueens(int index, int64_t num_queens) { atomicAdd(world_data_buffer_output.data[index + 2], num_queens); }
-int64_t getNumQueens(int index) { return world_data_buffer_input.data[index + 2]; }
+void addNumQueens(int index, int num_queens) { atomicAdd(world_data_buffer_output.data[index + 2], num_queens); }
+int getNumQueens(int index) { return world_data_buffer_input.data[index + 2]; }
 
-void addNumEnemies(int index, int64_t num_enemies) { atomicAdd(world_data_buffer_output.data[index + 3], num_enemies); }
-int64_t getNumEnemies(int index) { return world_data_buffer_input.data[index + 3]; }
+void addNumEnemies(int index, int num_enemies) { atomicAdd(world_data_buffer_output.data[index + 3], num_enemies); }
+int getNumEnemies(int index) { return world_data_buffer_input.data[index + 3]; }
 
 #define INIT_DATA_VARS(index) \
-	int64_t initNumAnts = getNumAnts(index); \
-	int64_t initNumFood = getNumFood(index); \
-	int64_t initNumQueens = getNumQueens(index); \
-	int64_t initNumEnemies = getNumEnemies(index); \
-	int64_t numAnts = initNumAnts, numFood = initNumFood, numQueens = initNumQueens, numEnemies = initNumEnemies;
+	int initNumAnts = getNumAnts(index); \
+	int initNumFood = getNumFood(index); \
+	int initNumQueens = getNumQueens(index); \
+	int initNumEnemies = getNumEnemies(index); \
+	int numAnts = initNumAnts, numFood = initNumFood, numQueens = initNumQueens, numEnemies = initNumEnemies;
 #define CLAMP_DATA_VARS() \
 	numAnts = max(0, numAnts); \
 	numFood = max(0, numFood); \
@@ -90,8 +87,8 @@ void baseUpdate(ivec3 pos) {
 	INIT_DATA_VARS(index);
 
 	// Ants eat food, or die if not enough
-	int64_t totalAntFoodConsumption = initNumAnts * antFoodConsumption;
-	int64_t totalQueenFoodConsumption = initNumQueens * queenFoodConsumption;
+	int totalAntFoodConsumption = initNumAnts * antFoodConsumption;
+	int totalQueenFoodConsumption = initNumQueens * queenFoodConsumption;
 	numFood -= totalAntFoodConsumption + totalQueenFoodConsumption;
 	if (initNumFood - totalQueenFoodConsumption < 0) { numQueens = initNumFood; }
 	if (initNumFood - totalAntFoodConsumption - totalQueenFoodConsumption < 0) { numAnts = initNumFood - totalQueenFoodConsumption; }
@@ -110,13 +107,13 @@ void baseUpdate(ivec3 pos) {
 	APPLY_DATA_VARS(index);
 }
 
-int64_t getFoodDemand(int index) {
+int getFoodDemand(int index) {
 	return (antFoodConsumption * getNumAnts(index)) + (5 * queenFoodConsumption * getNumQueens(index));
 }
-int64_t getAntDemand(int index) {
-	int64_t numAnts = getNumAnts(index);
-	int64_t numFood = getNumFood(index);
-	int64_t numQueens = getNumQueens(index);
+int getAntDemand(int index) {
+	int numAnts = getNumAnts(index);
+	int numFood = getNumFood(index);
+	int numQueens = getNumQueens(index);
 
 	return max(0, (numQueens * antQueenRatio) 
 		+ (numAnts * getNumEnemies(index) * enemyFightStrength / (1 + numQueens * queenFightStrength + numAnts * antFightStrength))
@@ -131,31 +128,31 @@ void moveAnts(ivec3 pos) {
 
 	// Try to spread food evenly, depending on food demand
 	// Also try to spread ants evenly, depending on ant demand
-	int64_t totalFoodAntsLeaving = 0, totalNotFoodAntsLeaving = 0;
-	int64_t foodAntsLeaving[27], notFoodAntsLeaving[27];
+	int totalFoodAntsLeaving = 0, totalNotFoodAntsLeaving = 0;
+	int foodAntsLeaving[27], notFoodAntsLeaving[27];
 	for (int i = -1; i <= 1; i ++) {
 		for (int j = -1; j <= 1; j ++) {
 			for (int k = -1; k <= 1; k ++) {
 				int neighborIndex = getIndex(pos + ivec3(i, j, k));
 				// only do calculations if valid pos, and not current pos
 				if (neighborIndex != -1 && neighborIndex != index) {
-					int64_t localFoodAntsLeaving = 0, localNotFoodAntsLeaving = 0;
+					int localFoodAntsLeaving = 0, localNotFoodAntsLeaving = 0;
 					if (getFoodDemand(index) + getFoodDemand(neighborIndex) != 0) {
-						int64_t assignedFood = (initNumFood + getNumFood(neighborIndex)) * getFoodDemand(neighborIndex) / (getFoodDemand(index) + getFoodDemand(neighborIndex));
+						int assignedFood = (initNumFood + getNumFood(neighborIndex)) * getFoodDemand(neighborIndex) / (getFoodDemand(index) + getFoodDemand(neighborIndex));
 						// if neighbor has less than assigned food, some of our ants move there, carrying food
 						// otherwise, some of their ants will move here, carrying food
 						if (getNumFood(neighborIndex) < assignedFood) {
-							localFoodAntsLeaving = min(int64_t(antLeaveRatio * initNumAnts), (assignedFood - getNumFood(neighborIndex)) / antFoodCarry);
-							int64_t localFoodLeaving = min(initNumFood / antFoodCarry * antFoodCarry, localFoodAntsLeaving * antFoodCarry);
+							localFoodAntsLeaving = min(int(antLeaveRatio * initNumAnts), (assignedFood - getNumFood(neighborIndex)) / antFoodCarry);
+							int localFoodLeaving = min(initNumFood / antFoodCarry * antFoodCarry, localFoodAntsLeaving * antFoodCarry);
 							localFoodAntsLeaving = localFoodLeaving / antFoodCarry;
 						}
 					}
 					
 					// some ants also follow ant demand
 					if (getAntDemand(index) + getAntDemand(neighborIndex) != 0) {
-						int64_t assignedAnts = (initNumAnts + getNumAnts(neighborIndex)) * getAntDemand(neighborIndex) / (getAntDemand(index) + getAntDemand(neighborIndex));
+						int assignedAnts = (initNumAnts + getNumAnts(neighborIndex)) * getAntDemand(neighborIndex) / (getAntDemand(index) + getAntDemand(neighborIndex));
 						if (getNumAnts(neighborIndex) < assignedAnts) {
-							localNotFoodAntsLeaving = min(int64_t(antLeaveRatio * initNumAnts), assignedAnts - getNumAnts(neighborIndex) + localFoodAntsLeaving) - localFoodAntsLeaving;
+							localNotFoodAntsLeaving = min(int(antLeaveRatio * initNumAnts), assignedAnts - getNumAnts(neighborIndex) + localFoodAntsLeaving) - localFoodAntsLeaving;
 						}
 					}
 
@@ -179,11 +176,11 @@ void moveAnts(ivec3 pos) {
 				int neighborIndex = getIndex(pos + ivec3(i, j, k));
 				// only run if valid pos, and not current pos
 				if (neighborIndex != -1 && neighborIndex != index) {
-					int64_t localFoodAntsLeaving = foodAntsLeaving[(i + 1) * 3 * 3 + (j + 1) * 3 + k + 1];
-					int64_t localNotFoodAntsLeaving = notFoodAntsLeaving[(i + 1) * 3 * 3 + (j + 1) * 3 + k + 1];
+					int localFoodAntsLeaving = foodAntsLeaving[(i + 1) * 3 * 3 + (j + 1) * 3 + k + 1];
+					int localNotFoodAntsLeaving = notFoodAntsLeaving[(i + 1) * 3 * 3 + (j + 1) * 3 + k + 1];
 
-					int64_t localAntsLeaving = int64_t(foodAntLeavingScalar * localFoodAntsLeaving) + int64_t(notFoodAntLeavingScalar * localNotFoodAntsLeaving);
-					int64_t localFoodLeaving = int64_t(foodAntLeavingScalar * localFoodAntsLeaving) * antFoodCarry;
+					int localAntsLeaving = int(foodAntLeavingScalar * localFoodAntsLeaving) + int(notFoodAntLeavingScalar * localNotFoodAntsLeaving);
+					int localFoodLeaving = int(foodAntLeavingScalar * localFoodAntsLeaving) * antFoodCarry;
 
 					// Apply changes (NOTE: local changes applied in bulk at end)
 					addNumAnts(neighborIndex, localAntsLeaving);

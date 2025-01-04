@@ -17,13 +17,13 @@ func get_size_z() -> int:
 	return max_z - min_z + 1
 # Data is stored in this order:
 # num_ants, num_food, num_queens, num_enemies
-var data: PackedInt64Array
+var data: PackedInt32Array
 func get_data_size() -> int:
 	return get_size_x() * get_size_y() * get_size_z() * DataPoint.NUM_DATA_ENTRIES
 
 # size variables are how many entries in that direction to store
 # scaling functions are how big the corresponding int is
-func _init(init_min_x: int, init_max_x: int, init_min_y: int, init_max_y: int, init_min_z: int, init_max_z: int, init_data: PackedInt64Array = PackedInt64Array([])) -> void:
+func _init(init_min_x: int, init_max_x: int, init_min_y: int, init_max_y: int, init_min_z: int, init_max_z: int, init_data: PackedInt32Array = PackedInt32Array([])) -> void:
 	min_x = init_min_x
 	max_x = init_max_x
 	min_y = init_min_y
@@ -33,7 +33,7 @@ func _init(init_min_x: int, init_max_x: int, init_min_y: int, init_max_y: int, i
 	
 	# Initialize data if it is empty
 	if init_data.size() == 0:
-		data = PackedInt64Array([])
+		data = PackedInt32Array([])
 		data.resize(get_data_size())
 		for x in range(min_x, max_x + 1):
 			for y in range(min_y, max_y + 1):

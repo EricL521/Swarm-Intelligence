@@ -31,7 +31,7 @@ func init_buffers(initial: bool) -> void:
 		var world_size_bytes := PackedInt32Array([world.get_size_x(), world.get_size_y(), world.get_size_z(), DataPoint.NUM_DATA_ENTRIES]).to_byte_array()
 		_world_size_buffer = rd.storage_buffer_create(world_size_bytes.size(), world_size_bytes)
 		
-		var render_settings_bytes := PackedInt32Array(_render_settings.to_array()).to_byte_array()
+		var render_settings_bytes := _render_settings.to_byte_array()
 		_render_settings_buffer = rd.uniform_buffer_create(render_settings_bytes.size(), render_settings_bytes)
 		
 		var blend_texture_format := RDTextureFormat.new()

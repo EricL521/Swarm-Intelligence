@@ -36,5 +36,5 @@ func update() -> void:
 func _on_gpu_sync(_rd: RenderingDevice) -> void:
 	# Read back the data from the buffer
 	_world_data_bytes = rd.buffer_get_data(_world_data_buffer)
-	world.data = _world_data_bytes.to_int64_array()
+	world.data = _world_data_bytes.to_int32_array()
 	world_update.emit()
